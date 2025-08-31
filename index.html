@@ -417,6 +417,16 @@
             vehicleSections.appendChild(newSection);
             newSection.querySelectorAll(".upload-area").forEach(initUploadArea);
 
+            // Add vehicle type change handler to new section
+            const vehicleTypeSelect = newSection.querySelector(
+              'select[name="vehicleType[]"]'
+            );
+            if (vehicleTypeSelect) {
+              vehicleTypeSelect.addEventListener("change", function () {
+                handleVehicleTypeChange(this);
+              });
+            }
+
             // Add delete functionality to the new section
             const deleteBtn = newSection.querySelector(".btn-delete-vehicle");
             if (deleteBtn) {
@@ -480,6 +490,55 @@
 
         // Check button visibility on page load
         updateDeleteButtonVisibility();
+
+        // Handle user type changes
+        document.querySelectorAll('input[name="userType"]').forEach((radio) => {
+          radio.addEventListener("change", function () {
+            const isStudent = this.value === "student";
+            const courseField = document.querySelector('input[name="course"]');
+            const yearField = document.querySelector(
+              'select[name="yearLevel"]'
+            );
+            const academicField = document.querySelector(
+              'select[name="academicYear"]'
+            );
+            const sectionField = document.querySelector(
+              'input[name="section"]'
+            );
+
+            courseField.disabled = !isStudent;
+            yearField.disabled = !isStudent;
+            academicField.disabled = !isStudent;
+            sectionField.disabled = !isStudent;
+
+            if (!isStudent) {
+              courseField.value = "";
+              yearField.value = "";
+              academicField.value = "";
+              sectionField.value = "";
+            }
+          });
+        });
+
+        // Handle vehicle type changes
+        function handleVehicleTypeChange(select) {
+          const wheelSelect = select
+            .closest(".vehicle-section")
+            .querySelector('select[name="numWheels[]"]');
+          if (select.value === "Car") {
+            wheelSelect.value = "4";
+          } else if (select.value === "Motorcycle") {
+            wheelSelect.value = "2";
+          }
+        }
+
+        document
+          .querySelectorAll('select[name="vehicleType[]"]')
+          .forEach((select) => {
+            select.addEventListener("change", function () {
+              handleVehicleTypeChange(this);
+            });
+          });
       });
     </script>
   </body>
